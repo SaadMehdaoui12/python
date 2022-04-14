@@ -1,14 +1,11 @@
-from asyncio.windows_events import NULL
-from contextlib import nullcontext
-from gettext import NullTranslations
-from turtle import exitonclick
-from PyQt5 import QtCore,QtGui,QtWidgets
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtGui,QtWidgets
 import sys
+
 import requests
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
 from bs4 import BeautifulSoup
-import csv 
-from itertools import zip_longest
+
 app= QtWidgets.QApplication(sys.argv)
 w=QtWidgets.QWidget()
 w.resize(700,600)
@@ -46,37 +43,39 @@ def trai() :
     res = requests.get(f"https://www.jumia.ma/catalog/?q={inp.text()}")
     src = res.content
     sou = BeautifulSoup(src,"lxml")
+    # html = sou.prettify("utf-8")
+    # with open("output1.html", "wb") as file:
+    #     file.write(html)
     prix = sou.find_all("div", {"class":"prc"})
-    titre = sou.find_all("h3", {"class":"name"}) 
+    titre = sou.find_all("h3", {"class":"name"})
+
     titres = []
-    p = []
     h=[]
     num=[]
-    r=[] 
-    j=0  
-    t=0
-    o=[]
+    r=[]
+
     for i in range(len(titre)):
-      titres.append(titre[i].text)
-    for i in range(len(prix)):
-      h.append(prix[i].text)  
+        titres.append(titre[i].text)
+        h.append(prix[i].text)
+        print(titres[i])
+        print(h[i])
+
+    print("\n Number of products: ", len(titre))
+
     for i in h:
         p=i.split()
         for a in p[:1]: 
           num.append(a)
+
     for i in range(len(num)) :
-        r.append(float(num[i])) 
-    i=0 
-    j=r[i]  
-    while i  < len(r)-1:
-      if j < r[i+1] :
-           t=i
-      else  :
-          j=r[i+1]
-          t=i+1
-      i+=1   
-    print(j)  
-    print(titres[t])  
+        """convert to float without comma"""
+        num_nocomma = num[i].replace(",", "")
+        r.append(float(num_nocomma))
+
+    """Min function"""
+    print(min(r))
+    print(titres[r.index(min(r))])
+
 btn1.clicked.connect(trai)
 btn2.clicked.connect(fon)
 w.show()
