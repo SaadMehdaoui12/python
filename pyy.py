@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPixmap,QIcon
 from bs4 import BeautifulSoup
 import csv 
 from itertools import zip_longest
+import webbrowser
 
 
 app= QtWidgets.QApplication(sys.argv)
@@ -39,7 +40,15 @@ inp.move(380,56)
 inp.setStyleSheet('font-size:18px;border:5px solid white;border-radius:10px;font-family:Merriweather;')
 inp.setToolTip('text')
 image = QtWidgets.QLabel("",w)
+link_btn = QtWidgets.QPushButton("link",w)
+link_btn.resize(150,50)
+link_btn.move(500,250)
+link_btn.hide()
 
+
+def link():
+    # print(trai())
+    webbrowser.open(trai())
 
 
 def fon() :
@@ -67,8 +76,8 @@ def trai() :
       titres.append(link[i].find("a",{"class":"core"}).attrs['data-name'])
       img.append(link[i].find("img",{"class":"img"}).attrs['data-src'])
       h.append(prix[i].text)
-    print("\n Number of products: ", len(titres))
-    print(img[0])
+    # print("\n Number of products: ", len(titres))
+    # print(img[0])
     for i in h:
         p=i.split()
         for a in p[:1]:
@@ -86,12 +95,19 @@ def trai() :
 
     image.setPixmap(pixmap)
     image.move(10, 200)
+    final_link = QtWidgets.QLabel(str(links[r.index(min(r))]))
+    final_link.setOpenExternalLinks(True)
 
+    link_btn.show()
+    return str(f"www.jumia.ma{links[r.index(min(r))]}")
    #
    #  """Min function"""
    #  QtWidgets.QMessageBox.about(w,'Produit',f" Le Prix De Produit Est : {min(r)}" f"<br> Le Nom de Produit Est : {titres[r.index(min(r))]}"
    # f"<br> Le Site Web de Produit Est : jumia.ma{links[r.index(min(r))]}")
 btn1.clicked.connect(trai)
 btn2.clicked.connect(fon)
+link_btn.clicked.connect(link)
+
+
 w.show()
 app.exec_()
